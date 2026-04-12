@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KatMovie Hub - Free Movie Downloads</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="KatMovie Hub provides latest Hindi dubbed Hollywood movies with dual audio options. Watch trailers and official content in 480p, 720p, 1080p quality.">
+    <meta name="keywords" content="katmovie hub, hindi dubbed movies, dual audio movies, hollywood hindi dubbed, latest movies 2025, movie trailers hindi">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="KatMovie Hub">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #0a0a0a; color: #fff; font-family: 'Arial', sans-serif; margin: 0; padding: 0; }
+        .header { background: linear-gradient(#000, #1a1a1a); padding: 15px; text-align: center; border-bottom: 3px solid #ff0000; }
+        .header h1 { font-size: 1.8rem; margin: 0; }
+        .header p { font-size: 0.95rem; margin: 8px 0; }
+        .search-bar { max-width: 90%; margin: 15px auto; }
+        .search-bar input { border-radius: 30px; padding: 12px 20px; font-size: 1rem; }
+        .nav-bar { background: #1a1a1a; padding: 12px; text-align: center; }
+        .nav-bar a { color: #fff; margin: 0 12px; text-decoration: none; font-size: 1.1rem; }
+        .nav-bar a:hover { color: #ff0000; }
+        .trailer { margin: 20px 10px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 15px rgba(255,0,0,0.3); }
+        .trailer iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .main-content { padding: 15px; }
+        .main-content h2 { text-align: center; margin-bottom: 25px; font-size: 1.7rem; }
+
+        .movie-grid { 
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            padding: 0 10px;
+        }
+
+        .movie-card { 
+            background: #1e1e1e; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+        }
+        .movie-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(255,0,0,0.5); }
+        .movie-poster { width: 100%; height: 260px; object-fit: cover; }
+        .movie-info { padding: 12px; }
+        .movie-info h5 { font-size: 1rem; margin: 0 0 8px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-info p { font-size: 0.85rem; margin: 5px 0; line-height: 1.4; }
+        .rating { color: #ffd700; font-weight: bold; font-size: 1rem; }
+        .show-detail, .share-btn, .link-copied-btn { 
+            width: 100%; 
+            padding: 10px; 
+            font-size: 0.9rem; 
+            margin-top: 8px;
+            border-radius: 8px;
+        }
+        .link-copied-btn {
+            background: linear-gradient(135deg, #ffc107, #ff8c00);
+            color: #000;
+            font-weight: bold;
+        }
+        .link-copied-btn:hover { background: linear-gradient(135deg, #ff8c00, #e6b800); }
+
+        .share-modal .modal-content { background: #1e1e1e; color: #fff; }
+        .share-modal .modal-header, .share-modal .modal-footer { border-color: #333; }
+        .share-options { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px 0; }
+        .share-options a, .share-options button { 
+            color: white; 
+            text-decoration: none; 
+            font-size: 1.3rem; 
+            padding: 12px 24px; 
+            border-radius: 10px; 
+            transition: all 0.3s;
+            min-width: 140px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+        }
+        .share-options a:hover, .share-options button:hover { opacity: 0.9; transform: scale(1.05); }
+        .telegram { background: #0088cc; }
+        .whatsapp { background: #25D366; }
+        .instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .copy-btn { background: #6c757d; }
+
+        .loading-spinner { text-align: center; padding: 40px; font-size: 1.2rem; color: #ff0000; }
+        .loading-spinner.hidden { display: none; }
+
+        .footer { background: #000; padding: 25px 15px; text-align: center; margin-top: 50px; color: #ccc; font-size: 0.95rem; }
+        .visitor-counter { margin-top: 20px; font-size: 1.2rem; color: #ffd700; }
+        .visitor-counter strong { display: block; margin-bottom: 10px; }
+
+        @media (max-width: 576px) {
+            .movie-poster { height: 220px; }
+            .movie-info h5 { font-size: 0.95rem; }
+            .share-options { flex-direction: column; }
+            .share-options a, .share-options button { margin: 8px 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Your exact header, nav, trailer, modals remain unchanged -->
+    <header class="header">
+        <h1><a href="#" style="color: #fff; text-decoration: none;">KatMovie Hub</a></h1>
+        <p>Latest HD Movies - Hindi Dubbed & Dual Audio Downloads (480p/720p/1080p)</p>
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search movies...">
+        </div>
+    </header>
+ 
+    <nav class="nav-bar">
+        <a href="#">Home</a> | <a href="#">All Movies</a>
+    </nav>
+
+    <div class="trailer">
+        <iframe src="https://www.youtube.com/embed/lU46B_5Vel4?autoplay=1&mute=1&loop=1&playlist=lU46B_5Vel4&controls=0&rel=0&modestbranding=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+ 
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 main-content">
+                <h2>Latest Movies (Hindi Dubbed)</h2>
+                <div id="movieGrid" class="movie-grid"></div>
+                <div id="loadingSpinner" class="loading-spinner hidden">Loading more movies...</div>
+             
+                <!-- Movie Detail Modal -->
+                <div class="modal fade" id="movieModal" tabindex="-1">
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                        <div class="modal-content bg-dark text-white">
+                            <div class="modal-header border-secondary">
+                                <h5 class="modal-title" id="movieModalLabel">Movie Details</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body" id="modalContent"></div>
+                            <div class="modal-footer border-secondary">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Share Modal -->
+                <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-dark text-white">
+                            <div class="modal-header border-secondary">
+                                <h5 class="modal-title" id="shareModalLabel">Share this Movie</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <p id="sharePreview" class="mb-4"></p>
+                                <div class="share-options">
+                                    <a href="#" id="shareTelegram" class="telegram">Telegram</a>
+                                    <a href="#" id="shareWhatsapp" class="whatsapp">WhatsApp</a>
+                                    <a href="#" id="shareInstagram" class="instagram">Instagram</a>
+                                    <button id="shareCopy" class="copy-btn">Copy Caption</button>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-secondary">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <footer class="footer">
+        <p>© 2025 KatMovie Hub • Latest Hindi Dubbed Movies</p>
+        
+        <div class="visitor-counter">
+            <strong>Total Visitors:</strong>
+            <div id="sfcqlbucnf32sxf5nquu5j6z63t953ytyzk"></div>
+            <script type="text/javascript" src="https://counter1.optistats.ovh/private/counter.js?c=qlbucnf32sxf5nquu5j6z63t953ytyzk&down=async" async></script>
+            <noscript><a href="https://www.freecounterstat.com" title="web counter"><img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=qlbucnf32sxf5nquu5j6z63t953ytyzk" border="0" alt="web counter"></a></noscript>
+        </div>
+    </footer>
+ 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentPage = 1;
+        let isLoading = false;
+        let hasMore = true;
+        const PER_PAGE = 100;
+        const BASE_URL = 'https://public-api.wordpress.com/rest/v1/sites/katmoviehddotpk.wordpress.com/posts';
+
+        let currentShareData = null;
+
+        // ==================== YOUR FULL LINK LIST (NEW RANDOM LINKS EVERY TIME) ====================
+        const allDownloadLinks = [
+            "https://tpi.li/iiBgPzFmdfT","https://tpi.li/yH5a3K","https://tpi.li/L9f","https://tpi.li/KX795nK5cA8",
+            "https://tpi.li/Hwwwm2l","https://tpi.li/rmUISANqA","https://tpi.li/esxGYEN","https://tpi.li/D1tq5AZUJ",
+            "https://tpi.li/Vr9QAhNks8","https://tpi.li/kwAk0FBRU31","https://tpi.li/y2k6le1Ap","https://tpi.li/imnAM",
+            "https://tpi.li/LlUtOodxth","https://tpi.li/3gED6Bi","https://tpi.li/CvD3MnS71ii","https://tpi.li/CoSTXnvUot",
+            "https://tpi.li/LE8Ath","https://tpi.li/nV75Xm","https://tpi.li/19FxTH9UlDM","https://tpi.li/u9UbLEZ",
+            "https://tpi.li/n5M6HBsLvp","https://tpi.li/AirLJiT3fFF","https://tpi.li/9PHhBjV","https://tpi.li/akcTYUkmkBT",
+            "https://tpi.li/mrHH","https://tpi.li/t4tNdDdHw","https://tpi.li/0GUaK7u7Gx","https://tpi.li/cBvTF",
+            "https://tpi.li/NhexexzZn8","https://tpi.li/no4T","https://tpi.li/rlGbyV27","https://tpi.li/gRMYltHlPc7",
+            "https://tpi.li/kiNrWZyi4O","https://tpi.li/gOj2aS6Q","https://tpi.li/6gMDf","https://tpi.li/1VdrFeL",
+            "https://tpi.li/KAHV","https://tpi.li/aSdTx4V","https://tpi.li/boBMdd7GTE","https://tpi.li/AJbyb0mR6rB",
+            "https://tpi.li/zEYFT2zps1","https://tpi.li/2bCb","https://tpi.li/P6a","https://tpi.li/YNwuULZ",
+            "https://tpi.li/X6agSjEnG","https://tpi.li/aAMGGjO0Y","https://tpi.li/AIE8wwW7R","https://tpi.li/M7pEFCna0RF",
+            "https://tpi.li/8nYPx5Vsds","https://tpi.li/3MfOF4z1","https://tpi.li/oHxqVVpQlgM","https://tpi.li/H8nnbIb",
+            "https://tpi.li/IbtciJTGch","https://tpi.li/KQQejCWwd","https://tpi.li/zhFwZ3sDGX","https://tpi.li/Ju1elaU2CQ",
+            "https://tpi.li/OpZ3l0P","https://tpi.li/KTWK","https://tpi.li/HMBTpGe","https://tpi.li/dA1fEH7eoZM",
+            "https://tpi.li/fKuCYZ4wWV","https://tpi.li/HSOucIT8","https://tpi.li/uDS71d","https://tpi.li/LbU8K5Lys",
+            "https://tpi.li/ghpqfP","https://tpi.li/NGp4cdO","https://tpi.li/unk9","https://tpi.li/h4m5KX",
+            "https://tpi.li/zHlf","https://tpi.li/DLfYS","https://tpi.li/eDReD","https://tpi.li/Vu52",
+            "https://tpi.li/5GJP9","https://tpi.li/vfuCTPyNs","https://tpi.li/EACvhVMEh38","https://tpi.li/fYOijvZ7V",
+            "https://tpi.li/jY5yMAMNKF","https://tpi.li/uz90HgkR9","https://tpi.li/GhoRZ10","https://tpi.li/CBLm4Km",
+            "https://tpi.li/g5e6","https://tpi.li/Bt668ItfQR","https://tpi.li/Jz1g","https://tpi.li/PGqQN",
+            "https://tpi.li/XOQre","https://tpi.li/dET5","https://tpi.li/quTE4i","https://tpi.li/ifrbB8p",
+            "https://tpi.li/aHbvyIBXo","https://tpi.li/JaId","https://tpi.li/U9l","https://tpi.li/u71a2PaNHN0",
+            "https://tpi.li/0Dsp5CAN","https://tpi.li/eXa7u","https://tpi.li/CkbG","https://tpi.li/ZAEw9",
+            "https://tpi.li/Hh9RM","https://tpi.li/JWw","https://tpi.li/WOAvzGakKx","https://tpi.li/HZWFR",
+            "https://tpi.li/e3ICwHbV","https://tpi.li/CiX5a","https://tpi.li/synrd","https://tpi.li/LuP5",
+            "https://tpi.li/RtgdK","https://tpi.li/MXPOPvb","https://tpi.li/DMXJOtiP1ch","https://tpi.li/UrIYw",
+            "https://tpi.li/Lvx2oKzvF","https://tpi.li/1SWrRbK22N","https://tpi.li/A6t07EMf","https://tpi.li/OQpfmk",
+            "https://tpi.li/hMv4ENP42sR","https://tpi.li/D2uhmBLmth","https://tpi.li/v7hB4ZsJ7","https://tpi.li/fS1NQ",
+            "https://tpi.li/0LmJqSKuH","https://tpi.li/0VgHPbi","https://tpi.li/s6Poq2","https://tpi.li/O4iD7cLrL",
+            "https://tpi.li/4uGvRYP5n1M","https://tpi.li/N3Jm","https://tpi.li/q5L1eKD0l","https://tpi.li/uxqVNpGU",
+            "https://tpi.li/PKunu5DZ6","https://tpi.li/CRVVMxH5","https://tpi.li/oP4VblM41","https://tpi.li/YWkwNSPf",
+            "https://tpi.li/KOBNkAhz","https://tpi.li/fWEq6zNtly","https://tpi.li/A9wVJZ","https://tpi.li/HeqS7U",
+            "https://tpi.li/mqIgVfd","https://tpi.li/fjve","https://tpi.li/ifKhhx"
+        ];
+
+        // Your original sources array (kept unchanged for modal)
+        let sources = [ 
+            ["https://tpi.li/iiBgPzFmdfT","https://lnbz.la/0AC6","https://oii.la/KgVIs"],
+            ["https://tpi.li/9PHhBjV","https://lnbz.la/TLHLnP","https://oii.la/OsRSv9V8Y"],
+            ["https://tpi.li/akcTYUkmkBT","https://lnbz.la/Tpnh5iCo","https://oii.la/F86JesOl"]
+            // Add remaining sources if you want
+        ];
+
+        async function fetchPage(page) {
+            try {
+                const url = `${BASE_URL}?number=${PER_PAGE}&page=${page}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network error');
+                const data = await response.json();
+                return data.posts || [];
+            } catch (error) {
+                console.error('API fetch failed:', error);
+                return [];
+            }
+        }
+
+        function renderGrid(posts) {
+            const grid = document.getElementById('movieGrid');
+
+            posts.forEach(post => {
+                const year = new Date(post.date).getFullYear();
+                const genres = post.categories ? Object.values(post.categories).map(cat => cat.name || cat.title || cat).join(', ') : 'Uncategorized';
+                const synopsis = post.content ? post.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : 'No description.';
+                
+                let posterUrl = 'https://via.placeholder.com/300x450/ff0000/ffffff?text=No+Image';
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(post.content, 'text/html');
+                const img = doc.querySelector('img');
+                if (img && img.src) posterUrl = img.src;
+
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.setAttribute('data-title', post.title.toLowerCase());
+                card.innerHTML = `
+                    <img src="${posterUrl}" alt="${post.title} Hindi Dubbed Poster" class="movie-poster" onerror="this.src='https://via.placeholder.com/300x450/ff0000/ffffff?text=No+Image'">
+                    <div class="movie-info">
+                        <h5>${post.title} (${year})</h5>
+                        <p class="rating">★ 7.0</p>
+                        <p><strong>${genres}</strong></p>
+                        <p>${synopsis}</p>
+                        <button type="button" class="btn btn-danger show-detail" onclick="showDetail(${post.ID}, event)">Watch / Download</button>
+                        <button type="button" class="btn btn-success share-btn" onclick="openShareModal(${post.ID}, '${post.title.replace(/'/g, "\\'")}', '${posterUrl.replace(/'/g, "\\'")}', event)">Share</button>
+                        <button type="button" class="btn link-copied-btn" onclick="copyRandomLinks('${post.title.replace(/'/g, "\\'")}', event)">🔗 Link Copied</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ==================== NEW: RANDOM LINKS EVERY TIME ====================
+        function copyRandomLinks(title, event) {
+            if (event) { event.preventDefault(); event.stopPropagation(); }
+            let shuffled = [...allDownloadLinks].sort(() => 0.5 - Math.random());
+            let selected = shuffled.slice(0, 3);
+
+            const captionText = `Name - ${title} Full Series in Dual Audio Hindi/English\nDownload link below\n480p Link - ${selected[0]}\n720p Link - ${selected[1]}\n1080p Link - ${selected[2]}`;
+
+            navigator.clipboard.writeText(captionText).then(() => {
+                alert(`✅ Links Copied Successfully!\n\nTitle: ${title}`);
+            }).catch(() => alert("Failed to copy."));
+        }
+
+        // ==================== YOUR ORIGINAL FUNCTIONS (ONLY CHANGED LINK SELECTION) ====================
+        async function loadMoreMovies() {
+            if (isLoading || !hasMore) return;
+            isLoading = true;
+            document.getElementById('loadingSpinner').classList.remove('hidden');
+
+            const posts = await fetchPage(currentPage);
+            if (posts.length === 0) hasMore = false;
+            else {
+                renderGrid(posts);
+                currentPage++;
+                if (posts.length < PER_PAGE) hasMore = false;
+            }
+
+            isLoading = false;
+            document.getElementById('loadingSpinner').classList.add('hidden');
+        }
+
+        async function showDetail(postId, event) {
+            // Your exact original code (unchanged)
+            if (event) event.preventDefault(), event.stopPropagation();
+            try {
+                const response = await fetch(`${BASE_URL}/${postId}`);
+                if (!response.ok) throw new Error('Post fetch failed');
+                const post = await response.json();
+
+                let posterUrl = 'https://via.placeholder.com/600x400/ff0000/ffffff?text=No+Poster';
+                const imgMatch = post.content.match(/<img[^>]+src=["'](.*?)["']/i);
+                if (imgMatch && imgMatch[1]) posterUrl = imgMatch[1];
+
+                let youtubeUrl = '';
+                const patterns = [/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/i, /youtu\.be\/([a-zA-Z0-9_-]{11})/i, /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/i];
+                for (const pattern of patterns) {
+                    const match = post.content.match(pattern);
+                    if (match) {
+                        youtubeUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&rel=0`;
+                        break;
+                    }
+                }
+
+                let videoSection = youtubeUrl ? `<div class="trailer my-3"><iframe src="${youtubeUrl}" allowfullscreen allow="autoplay"></iframe></div>` : '';
+
+                let extraSourcesHtml = '<div class="mt-4 p-3 bg-dark border border-secondary rounded">';
+                extraSourcesHtml += '<h3 class="text-danger mb-3">Download Link below</h3>';
+
+                if (sources.length > 0) {
+                    let selected = [];
+                    let available = [...sources];
+                    for (let i = 0; i < 3 && available.length > 0; i++) {
+                        const idx = Math.floor(Math.random() * available.length);
+                        selected.push(available.splice(idx, 1)[0]);
+                    }
+
+                    selected.forEach((row, i) => {
+                        extraSourcesHtml += `<h5 class="mt-3">Source ${i + 1}</h5>`;
+                        extraSourcesHtml += `<div class="d-flex flex-wrap gap-3">`;
+                        ['480p', '720p', '1080p'].forEach((label, j) => {
+                            const url = row[j];
+                            if (url && url.startsWith('http')) {
+                                extraSourcesHtml += `<a href="${url}" target="_blank" class="btn btn-outline-light btn-sm">${label}</a>`;
+                            } else {
+                                extraSourcesHtml += `<span class="badge bg-secondary">${label}: N/A</span>`;
+                            }
+                        });
+                        extraSourcesHtml += `</div>`;
+                    });
+                }
+                extraSourcesHtml += '</div>';
+
+                document.getElementById('movieModalLabel').textContent = post.title;
+                document.getElementById('modalContent').innerHTML = `
+                    <img src="${posterUrl}" alt="${post.title} Poster" class="img-fluid mb-4 rounded" style="max-height:500px;" onerror="this.src='https://via.placeholder.com/600x400/ff0000/ffffff?text=No+Poster'">
+                    ${videoSection}
+                    ${extraSourcesHtml}
+                `;
+
+                new bootstrap.Modal(document.getElementById('movieModal')).show();
+            } catch (error) {
+                console.error(error);
+                alert('Failed to load movie details.');
+            }
+        }
+
+        function openShareModal(postId, title, poster, event) {
+            if (event) event.preventDefault(), event.stopPropagation();
+            currentShareData = { postId, title, poster };
+
+            document.getElementById('sharePreview').innerHTML = `
+                <strong>${title}</strong><br>
+                <img src="${poster}" alt="Poster" style="max-width:100%; height:auto; margin:12px 0; border-radius:8px;">
+                <p class="text-warning mt-2">Click Instagram to copy caption</p>
+            `;
+
+            new bootstrap.Modal(document.getElementById('shareModal')).show();
+        }
+
+        async function shareTo(platform) {
+            if (!currentShareData) return;
+
+            const { title, poster } = currentShareData;
+
+            // NEW: Always pick 3 FRESH random links from your full list
+            let shuffled = [...allDownloadLinks].sort(() => 0.5 - Math.random());
+            let selectedLinks = shuffled.slice(0, 3);
+
+            const captionText = `Name - ${title} full movie in hindi dubbed\n` +
+                                `Download link below\n` +
+                                `480p Link - ${selectedLinks[0]}\n` +
+                                `720p Link - ${selectedLinks[1]}\n` +
+                                `1080p Link - ${selectedLinks[2]}`;
+
+            if (platform === 'instagram') {
+                try {
+                    await navigator.clipboard.writeText(captionText);
+                } catch (e) {}
+
+                let shared = false;
+                if (navigator.share && navigator.canShare) {
+                    try {
+                        const res = await fetch(poster);
+                        if (res.ok) {
+                            const blob = await res.blob();
+                            const file = new File([blob], "poster.jpg", { type: "image/jpeg" });
+                            await navigator.share({
+                                title: title,
+                                text: captionText,
+                                files: [file]
+                            });
+                            shared = true;
+                        }
+                    } catch (err) {}
+                }
+
+                alert(`✅ Caption copied successfully!\n\nNow do this:\n\n1. Open Instagram App\n2. Tap "+" to create New Post\n3. Select the movie poster image\n4. Tap Next\n5. Long press in caption box → Paste`);
+
+                setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 800);
+                return;
+            }
+
+            if (platform === 'copy') {
+                navigator.clipboard.writeText(captionText).then(() => {
+                    alert('✅ Full caption copied!');
+                }).catch(() => alert('Copy failed'));
+                return;
+            }
+
+            let url = '';
+            if (platform === 'telegram') {
+                url = `https://t.me/share/url?url=${encodeURIComponent(poster)}&text=${encodeURIComponent(captionText)}`;
+            } else if (platform === 'whatsapp') {
+                url = `https://wa.me/?text=${encodeURIComponent(captionText)}`;
+            }
+
+            if (url) window.open(url, '_blank');
+        }
+
+        function searchMovies() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.movie-card').forEach(card => {
+                const title = card.querySelector('h5').textContent.toLowerCase();
+                card.style.display = title.includes(input) ? 'block' : 'none';
+            });
+        }
+
+        function handleScroll() {
+            if (isLoading || !hasMore) return;
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner.getBoundingClientRect().top < window.innerHeight + 200) {
+                loadMoreMovies();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMoreMovies();
+            document.getElementById('searchInput').addEventListener('input', searchMovies);
+            window.addEventListener('scroll', handleScroll);
+            window.addEventListener('touchmove', handleScroll);
+
+            document.getElementById('shareTelegram')?.addEventListener('click', e => { e.preventDefault(); shareTo('telegram'); });
+            document.getElementById('shareWhatsapp')?.addEventListener('click', e => { e.preventDefault(); shareTo('whatsapp'); });
+            document.getElementById('shareInstagram')?.addEventListener('click', e => { e.preventDefault(); shareTo('instagram'); });
+            document.getElementById('shareCopy')?.addEventListener('click', e => { e.preventDefault(); shareTo('copy'); });
+        });
+    </script>
+</body>
+</html>
